@@ -31,11 +31,14 @@ DOHMH New York City Restaurant Inspection Results https://data.cityofnewyork.us/
 ## The planned timeline
 
 *Nov 11: proposal
+
 *Nov 18: meet with teaching lead
-**Data tidying
-**Data wrangling
-**Making plots
-**Website outlook
-**Writing descriptions, findings, discussion
+
+*Data tidying
+*Data wrangling
+*Making plots
+*Website outlook
+*Writing descriptions, findings, discussion
+
 *Dec 11: report & webpage overview
 
