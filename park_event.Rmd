@@ -1,0 +1,25 @@
+---
+title: "park events"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(dbplyr)
+```
+
+```{r}
+park_event = read.csv("./park_events.csv") %>% 
+  select(event_id, title, date,start_time, end_time, cost_free)
+
+park_location = read.csv("./park_location.csv") %>% 
+  select(event_id, name, park_id, lat, long, borough)
+  
+park_organizer = read.csv("./park_organizer.csv") 
+  
+
+park = left_join(park_event, park_location, park_organizer, by = "event_id")
+  
+  
+```
+
