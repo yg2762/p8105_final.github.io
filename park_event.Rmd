@@ -8,18 +8,62 @@ library(tidyverse)
 library(dbplyr)
 ```
 
+## Data Tidying
 ```{r}
 park_event = read.csv("./park_events.csv") %>% 
-  select(event_id, title, date,start_time, end_time, cost_free)
-
+  select(event_id, title, date,start_time, end_time, cost_free, must_see)
 park_location = read.csv("./park_location.csv") %>% 
   select(event_id, name, park_id, lat, long, borough)
-  
-park_organizer = read.csv("./park_organizer.csv") 
-  
 
-park = left_join(park_event, park_location, park_organizer, by = "event_id")
-  
-  
+park_1 = left_join (park_event, park_location, by = "event_id") 
+ 
+park_organizer = read.csv("./park_organizer.csv")
+park_cate = read.csv ("./park_cate.csv") %>% 
+  rename(cate_name = name)
+
+park_2  = left_join (park_cate, park_organizer, by = "event_id")
+
+
+park_df = left_join (park_1, park_2,  by = "event_id")
+
 ```
+
+## Numbmer of events each year
+```{r}
+park_df %>% 
+  janitor::clean_names() %>%
+  separate(date, into = c("day","month", "year"), sep = "/") %>% 
+  group_by(year) %>% 
+  summarise(count = n())
+```
+
+
+## What are the most popular times for park events in a day, and how does this change throughout the years?
+```{r}
+park_df %>% 
+  separate(date, into = c("day","month", "year"), sep = "/") %>% 
+  group_by(year, start_time) %>% 
+  summarize(count = n())
+```
+
+
+## What were the most frequently held events and where were these events located?
+
+```{r}
+park_df%>% 
+  group_by (borough, cate_name) %>% 
+  summarize(count = n())
+```
+
+## Organizers
+```{r}
+park_df %>% 
+  separate(date, into = c("day","month", "year"), sep = "/") %>% 
+  group_by (event_organizer,year) %>% 
+  summarize(count = n())
+```
+
+
+
+
 

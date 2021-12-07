@@ -293,16 +293,110 @@ $(document).ready(function () {
 <pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
 ## 
 ##     ident, sql</code></pre>
+<div id="data-tidying" class="section level2">
+<h2>Data Tidying</h2>
 <pre class="r"><code>park_event = read.csv(&quot;./park_events.csv&quot;) %&gt;% 
-  select(event_id, title, date,start_time, end_time, cost_free)
-
+  select(event_id, title, date,start_time, end_time, cost_free, must_see)
 park_location = read.csv(&quot;./park_location.csv&quot;) %&gt;% 
   select(event_id, name, park_id, lat, long, borough)
-  
-park_organizer = read.csv(&quot;./park_organizer.csv&quot;) 
-  
 
-park = left_join(park_event, park_location, park_organizer, by = &quot;event_id&quot;)</code></pre>
+park_1 = left_join (park_event, park_location, by = &quot;event_id&quot;) 
+ 
+park_organizer = read.csv(&quot;./park_organizer.csv&quot;)
+park_cate = read.csv (&quot;./park_cate.csv&quot;) %&gt;% 
+  rename(cate_name = name)
+
+park_2  = left_join (park_cate, park_organizer, by = &quot;event_id&quot;)
+
+
+park_df = left_join (park_1, park_2,  by = &quot;event_id&quot;)</code></pre>
+</div>
+<div id="numbmer-of-events-each-year" class="section level2">
+<h2>Numbmer of events each year</h2>
+<pre class="r"><code>park_df %&gt;% 
+  janitor::clean_names() %&gt;%
+  separate(date, into = c(&quot;day&quot;,&quot;month&quot;, &quot;year&quot;), sep = &quot;/&quot;) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = n())</code></pre>
+<pre><code>## # A tibble: 7 × 2
+##   year  count
+##   &lt;chr&gt; &lt;int&gt;
+## 1 2013  33996
+## 2 2014  37878
+## 3 2015  39771
+## 4 2016  43366
+## 5 2017  41853
+## 6 2018  53915
+## 7 2019   1989</code></pre>
+</div>
+<div id="what-are-the-most-popular-times-for-park-events-in-a-day-and-how-does-this-change-throughout-the-years" class="section level2">
+<h2>What are the most popular times for park events in a day, and how does this change throughout the years?</h2>
+<pre class="r"><code>park_df %&gt;% 
+  separate(date, into = c(&quot;day&quot;,&quot;month&quot;, &quot;year&quot;), sep = &quot;/&quot;) %&gt;% 
+  group_by(year, start_time) %&gt;% 
+  summarize(count = n())</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;year&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 373 × 3
+## # Groups:   year [7]
+##    year  start_time count
+##    &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;
+##  1 2013  00:00          4
+##  2 2013  06:00        301
+##  3 2013  06:30         82
+##  4 2013  07:00         48
+##  5 2013  07:30        215
+##  6 2013  08:00       2346
+##  7 2013  08:30        133
+##  8 2013  08:45          7
+##  9 2013  09:00       3982
+## 10 2013  09:15         15
+## # … with 363 more rows</code></pre>
+</div>
+<div id="what-were-the-most-frequently-held-events-and-where-were-these-events-located" class="section level2">
+<h2>What were the most frequently held events and where were these events located?</h2>
+<pre class="r"><code>park_df%&gt;% 
+  group_by (borough, cate_name) %&gt;% 
+  summarize(count = n())</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;borough&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 645 × 3
+## # Groups:   borough [7]
+##    borough cate_name                              count
+##    &lt;chr&gt;   &lt;chr&gt;                                  &lt;int&gt;
+##  1 &quot;&quot;      Accessible                               134
+##  2 &quot;&quot;      Art                                       30
+##  3 &quot;&quot;      Art in the Parks: Celebrating 50 Years     2
+##  4 &quot;&quot;      Arts &amp; Crafts                             34
+##  5 &quot;&quot;      Arts, Culture &amp; Fun Series                 5
+##  6 &quot;&quot;      Astronomy                                  1
+##  7 &quot;&quot;      Best for Kids                            320
+##  8 &quot;&quot;      Birding                                   16
+##  9 &quot;&quot;      Black History Month                        2
+## 10 &quot;&quot;      Bronx River Greenway                      54
+## # … with 635 more rows</code></pre>
+</div>
+<div id="organizers" class="section level2">
+<h2>Organizers</h2>
+<pre class="r"><code>park_df %&gt;% 
+  separate(date, into = c(&quot;day&quot;,&quot;month&quot;, &quot;year&quot;), sep = &quot;/&quot;) %&gt;% 
+  group_by (event_organizer,year) %&gt;% 
+  summarize(count = n())</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;event_organizer&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 3,513 × 3
+## # Groups:   event_organizer [2,158]
+##    event_organizer                                       year  count
+##    &lt;chr&gt;                                                 &lt;chr&gt; &lt;int&gt;
+##  1 : East 43rd Street Community Garden                   2017      4
+##  2 (TASCA) The American Small Craft Association          2015     18
+##  3 106 St. Old Timers                                    2018      2
+##  4 106 St. Old Timers, Inc.                              2018      2
+##  5 10th &amp; Stuyvesant Streets Block Association           2018      2
+##  6 132nd st Community Garden                             2018      2
+##  7 14 Sculptors                                          2017     35
+##  8 150 - 155th Street Edgecombe Block Association        2016      2
+##  9 150 - 155th Street Edgecombe Block Association        2017      2
+## 10 150th-155th Street Edgecombe Avenue Block Association 2014      2
+## # … with 3,503 more rows</code></pre>
+</div>
 
 
 
