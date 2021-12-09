@@ -6,6 +6,8 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(dbplyr)
+library(rvest)
+library(plotly)
 ```
 
 ## Data Tidying
@@ -30,21 +32,68 @@ park_df = left_join (park_1, park_2,  by = "event_id")
 
 ## Numbmer of events each year
 ```{r}
-park_df %>% 
+park_1%>% 
   janitor::clean_names() %>%
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(year) %>% 
-  summarise(count = n())
+  summarise(n())
 ```
 
 
 ## What are the most popular times for park events in a day, and how does this change throughout the years?
 ```{r}
+park_1%>% 
+  separate(date, into = c("day","month", "year"), sep = "/") %>% 
+  group_by(start_time, year) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count)) 
+```
+
+
+## What is the most popular cate?
+```{r}
 park_df %>% 
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
-  group_by(year, start_time) %>% 
-  summarize(count = n())
+  group_by(cate_name) %>% 
+  summarize(count = n())%>% 
+  filter(count > 1000) %>% 
+  mutate(cate_name = as.factor(cate_name)) %>% 
+  mutate(cate_name = fct_reorder(cate_name, count)) %>% 
+  ggplot(aes(x = cate_name, y = count)) + 
+    geom_point() + 
+    labs(
+    title = "Park Event Category",
+    x = "Event Categories",
+    y = "Count"
+  ) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
+
+## most popular cate distribution by location
+```{r}
+popular_cate = park_df %>% 
+  filter(cate_name %in% c("Best for Kids", "Fitness", "Art", "Nature", "Education")) %>% 
+
+  plot_ly(
+    x = ~lat, y = ~long, type = "scatter", mode = "markers", color = ~cate_name
+   )
+popular_cate
+  
+```
+
+## Most popular cate change by each year
+```{r}
+park_df %>% 
+  separate(date, into = c("day","month", "year"), sep = "/") %>% 
+  filter(cate_name %in% c("Best for Kids", "Fitness", "Art", "Nature", "Education")) %>% 
+  group_by(year,cate_name) %>% 
+  summarize(count = n())%>% 
+  pivot_wider(
+    names_from = year,
+    values_from = count
+  )
+```
+
 
 
 ## What were the most frequently held events and where were these events located?
@@ -59,6 +108,7 @@ park_df%>%
 ```{r}
 park_df %>% 
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
+
   group_by (event_organizer,year) %>% 
   summarize(count = n())
 ```
