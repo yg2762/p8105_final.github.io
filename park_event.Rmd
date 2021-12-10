@@ -32,6 +32,7 @@ park_2  = left_join (park_cate, park_organizer, by = "event_id")
 park_df = left_join (park_1, park_2,  by = "event_id")
 
 ```
+After data processing and cleaning, there are 252,768 rows and 14 variables. 
 
 ## Numbmer of events each year
 ```{r, message = FALSE, echo=FALSE}
@@ -39,9 +40,10 @@ park_1%>%
   janitor::clean_names() %>%
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(year) %>% 
-  summarise(count = n())
+  summarise(count = n()) %>% 
+knitr::kable()
 ```
-
+Obviously, 2013 held the most events. Top three years with most numbers of events  are 2013, 2014, and 2015. 
 
 ## What are the most popular times for park events in a day, and how does this change throughout the years?
 ```{r, meessage = FALSE, echo=FALSE}
@@ -49,7 +51,7 @@ park_1%>%
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(start_time, year) %>% 
   summarise(count = n()) %>% 
-  arrange(desc(count)) 
+  arrange(desc(count))
 ```
 
 
@@ -71,6 +73,7 @@ park_df %>%
   ) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
+Based on the plot, top five event categories (with highest counts) are `Best for Kids`, `Fitness`, `Nature`, `Education`, `Art`. Five event categories (with lowest counts) are `My Summer House NYC`, `Shape Up New York`, `Summer Sports Expereince`, `Wildlife`, `GreemThumb Partner Events`. 
 
 ## most popular cate distribution by location
 ```{r, message = FALSE, echo = FALSE}
@@ -83,6 +86,7 @@ popular_cate = park_df %>%
 popular_cate
   
 ```
+This plot shows the distribution of the top five event categories (`Best for Kids`, `Fitness`, `Nature`, `Education`, `Art`) with specific latitudes and longitude of each locations. 
 
 ## Most popular cate change by each year
 ```{r, message = FALSE, echo = FALSE}
@@ -96,6 +100,7 @@ park_df %>%
     values_from = count
   )
 ```
+
 
 
 
