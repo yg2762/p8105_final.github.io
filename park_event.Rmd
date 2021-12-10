@@ -1,9 +1,12 @@
 ---
-title: "park events"
-output: github_document
+title: "Event Categories"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
-```{r}
+```{r, echo=FALSE}
 library(tidyverse)
 library(dbplyr)
 library(rvest)
@@ -11,7 +14,7 @@ library(plotly)
 ```
 
 ## Data Tidying
-```{r}
+```{r, echo = FALSE}
 park_event = read.csv("./park_events.csv") %>% 
   select(event_id, title, date,start_time, end_time, cost_free, must_see)
 park_location = read.csv("./park_location.csv") %>% 
@@ -31,17 +34,17 @@ park_df = left_join (park_1, park_2,  by = "event_id")
 ```
 
 ## Numbmer of events each year
-```{r}
+```{r,echo=FALSE}
 park_1%>% 
   janitor::clean_names() %>%
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(year) %>% 
-  summarise(n())
+  summarise(count = n())
 ```
 
 
 ## What are the most popular times for park events in a day, and how does this change throughout the years?
-```{r}
+```{r, echo=FALSE}
 park_1%>% 
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(start_time, year) %>% 
@@ -51,7 +54,7 @@ park_1%>%
 
 
 ## What is the most popular cate?
-```{r}
+```{r,echo=FALSE}
 park_df %>% 
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   group_by(cate_name) %>% 
@@ -70,7 +73,7 @@ park_df %>%
 ```
 
 ## most popular cate distribution by location
-```{r}
+```{r, echo = FALSE}
 popular_cate = park_df %>% 
   filter(cate_name %in% c("Best for Kids", "Fitness", "Art", "Nature", "Education")) %>% 
 
@@ -82,7 +85,7 @@ popular_cate
 ```
 
 ## Most popular cate change by each year
-```{r}
+```{r, echo = FALSE}
 park_df %>% 
   separate(date, into = c("day","month", "year"), sep = "/") %>% 
   filter(cate_name %in% c("Best for Kids", "Fitness", "Art", "Nature", "Education")) %>% 
