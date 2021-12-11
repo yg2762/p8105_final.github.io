@@ -11,7 +11,7 @@
 
 
 
-<title>index.knit</title>
+<title>Data</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,9 +29,6 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -223,69 +220,6 @@ $(document).ready(function () {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -293,16 +227,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -349,16 +273,39 @@ div.tocify {
 
 
 
+<h1 class="title toc-ignore">Data</h1>
 
 </div>
 
 
-
-
-
-
+<div id="data-sources" class="section level2">
+<h2>Data Sources</h2>
+<p>All data was downloaded from <a href="https://opendata.cityofnewyork.us/">NYC Open Data</a>.</p>
+<p>The NYC Parks Events Listing database is used to store event information displayed on the <a href="nyc.gov/parks">Parks Website</a>. There are seven related tables that make up the this database, this project used four of them. (For a complete list of related datasets, please follow <a href="https://data.cityofnewyork.us/browse?Data-Collection_Data-Collection=NYC+Parks+Events&amp;sortBy=alpha">here</a>.)</p>
+<p>For this project, we used:</p>
+<p><a href="https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Locations/cpcm-i88g">Events_Events table</a> (This is the primary table that contains basic data about every event. Each record is an event.)</p>
+<p><a href="https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Categories/xtsw-fqvh">Events_Categories</a> (Each record is a category describing an event. One event can be in more than one category.)</p>
+<p><a href="https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Locations/cpcm-i88g">Events_Locations</a> (Each record is a location where an event takes place. One event can have more than one location.)</p>
+<p><a href="https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Organizers/jk6k-yab4">Events_Organizers</a> (Each record contains a group or person organizing an event. One event can have more than one organizer.)</p>
 </div>
+<div id="data-description" class="section level2">
+<h2>Data Description</h2>
+<p>For data analysis, we mainly focused on <code>park_events.csv</code>, which is our primary data source. We also used three related tables, <code>park_location.csv</code>, <code>park_organizer.csv</code>, and <code>park_cate.csv</code>, that make up the NYC Parks Events database to join on the primary table of events listing.</p>
+<p>After data processing and data cleaning, our final data frame <code>park_df</code> contains 252768 rows and 14 variables. Among those variables, we are interested in:</p>
+<p><code>title</code>. Titles of Parks Events.</p>
+<p><code>data</code>. Specific date of Parks Events.</p>
+<p><code>start_time</code>. The start time of each single events.</p>
+<p><code>cost_free</code>. Indicates whether the specific event is free, <code>0</code> means free.</p>
+<p><code>must_see</code>. Indicates whether the specific event is top-rated, <code>1</code> means highly recommended to see.</p>
+<p><code>name</code>. Parks names.</p>
+<p><code>lat</code>. Latitude of parks.</p>
+<p><code>long</code>. Longitude of parks.</p>
+<p><code>borough</code>. Boroughs for parks.</p>
+<p><code>cate_name</code>. Categories of events.</p>
 </div>
+
+
+
 
 </div>
 
@@ -391,35 +338,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
