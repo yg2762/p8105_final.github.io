@@ -5,8 +5,8 @@ navbar:
   right:
     - text: "Event Categories"
       href: park_event.html
-    - text: "Dashboard"
-      href: Dashboard.html
+    - text: "Data"
+      href: Data.html
     - icon: fa-envelope fa-lg
       href: mailto:<yg2762@columbia.edu>
     - icon: fa-github fa-lg

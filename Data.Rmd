@@ -1,0 +1,51 @@
+---
+title: "Data"
+output: html_document
+---
+
+## Data Sources
+
+All data was downloaded from [NYC Open Data](https://opendata.cityofnewyork.us/).
+
+The NYC Parks Events Listing database is used to store event information displayed on the [Parks Website](nyc.gov/parks). There are seven related tables that make up the this database, this project used four of them.
+(For a complete list of related datasets, please follow [here](https://data.cityofnewyork.us/browse?Data-Collection_Data-Collection=NYC+Parks+Events&sortBy=alpha).)
+
+For this project, we used:
+
+[Events_Events table](https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Locations/cpcm-i88g) (This is the primary table that contains basic data about every event. Each record is an event.)
+
+[Events_Categories](https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Categories/xtsw-fqvh) (Each record is a category describing an event. One event can be in more than one category.)
+
+[Events_Locations](https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Locations/cpcm-i88g) (Each record is a location where an event takes place. One event can have more than one location.)
+
+[Events_Organizers](https://data.cityofnewyork.us/City-Government/NYC-Parks-Events-Listing-Event-Organizers/jk6k-yab4) (Each record contains a group or person organizing an event. One event can have more than one organizer.)
+
+
+## Data Description
+
+For data analysis, we mainly focused on `park_events.csv`, which is our primary data source. We also used three related tables, `park_location.csv`, `park_organizer.csv`, and `park_cate.csv`, that make up the NYC Parks Events database to join on the primary table of events listing. 
+
+After data processing and data cleaning, our final data frame `park_df` contains 252768 rows and 14 variables. Among those variables, we are interested in: 
+
+  `title`. Titles of Parks Events. 
+  
+  `data`. Specific date of Parks Events. 
+  
+  `start_time`. The start time of each single events. 
+  
+  `cost_free`. Indicates whether the specific event is free, `0` means free. 
+  
+  `must_see`. Indicates whether the specific event is top-rated, `1` means highly recommended to see. 
+  
+  `name`. Parks names. 
+  
+  `lat`. Latitude of parks. 
+  
+  `long`. Longitude of parks.
+  
+  `borough`. Boroughs for parks. 
+  
+  `cate_name`. Categories of events.
+  
+  
+  
